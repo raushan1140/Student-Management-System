@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+
+        <!-- including axios file in frontend -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <style>
+body {
+    text-align: center;
+    background-color: #1a1a1a; /* Dark background color */
+    color: #fff; /* White text color */
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2 {
+    font-family: cursive;
+    letter-spacing: 1px;
+}
+
+h1 {
+    font-size: 40px;
+}
+
+h2.company {
+    font-size: 30px;
+    text-transform: uppercase;
+}
+
+marquee {
+    font-size: 18px;
+    padding-top: 4px;
+    padding: 4px;
+    background-color: pink;
+}
+
+button {
+    height: 35px;
+    width: 12rem;
+    font-size: 18px;
+    padding: 5px;
+    margin: 0px 10px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    box-shadow: 2px 2px 3px brown;
+    transition: all 0.2s linear;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: brown;
+    color: white;
+}
+
+.container {
+    margin: 70px auto;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+    background-color: #2c2c2c; /* Dark gray background color */
+    color: #fff; /* White text color */
+    padding: 20px;
+}
+
+#form1 {
+    height: auto;
+    width: 50rem;
+}
+
+#form2 {
+    height: 30rem;
+    width: 30rem;
+}
+
+.btn-container {
+    margin: 80px auto;
+}
+
+h2 {
+    font-size: 30px;
+}
+
+table {
+    background-color: #333; /* Dark gray background color */
+    color: white;
+    width: 90%;
+    height: auto;
+    border-radius: 6px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-bottom: 30px;
+}
+
+table tr {
+    height: 40px;
+}
+
+.search {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0px;
+}
+
+.search label {
+    font-size: 20px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color: white;
+}
+
+.search input {
+    height: 30px;
+    width: 200px;
+    padding: 0px 14px;
+    font-size: 20px;
+}
+
+.getAll-btn, .get-btn {
+    margin-bottom: 20px;
+}
+
+.company {
+    font-size: 30px;
+    text-transform: uppercase;
+}
+
+.marq {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+    </style>
+</head>
+<body>
+
+    {{!-- <marquee width="100%" style="font-size: 18px; padding-top:4px;padding: 4px;" bgcolor="pink"> Welcome to the Student Management portal
+        of <span class="marq">{{user.companyName}}</span>  </marquee>   --}}
+
+    <h1> Student Management System </h1>
+
+    <h2 class="company"> {{user.companyName}} </h2>
+
+    <div class="btn-container">
+
+        <a href="/addStudentPage"> <button> Add Student </button> </a>
+        <a href="/deleteStudentPage"> <button> Delete Student </button> </a>
+        <a href="/updateStudentPage"> <button> Update Student </button> </a>
+        
+    </div>
+
+    <div class="container">
+        <form action="" id="form1">
+            <h2> Students List </h2>
+
+            <button type="submit" class="getAll-btn"> Get Students </button>
+    
+            <table class="form1-table">
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Roll Number</td>
+                        <td>Email</td>
+                    </tr>
+                </thead>
+            
+            </table>
+    
+        </form>
+    
+        <form action="http://localhost:3000/students/" method="get" id="form2">
+            <h2> Search Student </h2>
+
+            <div class="search">
+                <label for="rollno"> Roll no: </label>
+                <input type="text" name="rollno" id="rollno">
+
+            </div>
+            <button type="submit" class="get-btn"> Get </button>
+
+            <table class="form2-table">
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Roll Number</td>
+                        <td>Email</td>
+                    </tr>
+                </thead>
+                <tr>
+                    <td id="form2-name"></td>
+                    <td id="form2-roll"></td>
+                    <td id="form2-email"></td>
+                </tr>
+            </table>
+
+        </form>
+    </div>
+
+
+
+    <script>
+
+
+        // submit button form 1
+        let btn1 = document.querySelector(".getAll-btn");
+
+        // submit button form 2
+        let btn2 = document.querySelector(".get-btn");
+
+        let input = document.querySelector('#rollno');
+
+
+
+
+        // FORM 2:
+        let nameContainer = document.getElementById('form2-name');
+        let rollContainer = document.getElementById('form2-roll');
+        let emailContainer = document.getElementById('form2-email');
+
+        btn2.addEventListener('click' , async(event)=>{
+            event.preventDefault();
+
+
+            let val = input.value ;
+
+            try{
+                let response = await axios.get(`http://localhost:3000/students/${val}`);
+                console.log(response.data.student) ;
+                let student = response.data.student ;
+                
+                nameContainer.textContent = student.name ;
+                rollContainer.textContent = student.rollno;
+                emailContainer.textContent = student.email ;
+                // alert(response.data.message) ;
+            }
+            catch(err){
+                nameContainer.textContent = "" ;
+                rollContainer.textContent = "" ;
+                emailContainer.textContent = "" ;
+                alert("No Such Student!!");
+                console.log(err) ;
+            }
+        })
+
+
+
+        // FORM 1:
+        let table1 = document.querySelector(".form1-table");
+
+        btn1.addEventListener('click' , async(event)=>{
+            event.preventDefault() ;
+
+            try{
+                let response = await axios.get(`http://localhost:3000/students`);
+                console.log(response.data) ;
+                let data = response.data ;          // contains the array of students info
+
+                table1.innerHTML = `<thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Roll Number</td>
+                        <td>Email</td>
+                    </tr>
+                </thead>` ;
+
+                data.map((stu) => {
+                    let tr = document.createElement('tr') ;
+                    let td1 = document.createElement('td') ;
+                    let td2 = document.createElement('td') ;
+                    let td3 = document.createElement('td') ;
+
+                    td1.textContent = stu.name ;
+                    td2.textContent = stu.rollno;
+                    td3.textContent = stu.email ;
+
+                    tr.appendChild(td1) ;
+                    tr.appendChild(td2) ;
+                    tr.appendChild(td3) ;
+
+                    table1.appendChild(tr) ;
+                })
+                
+
+            }
+            catch(err){
+                console.log("Error aaya hai!!") ;
+            }
+
+        })
+
+    </script>
+
+
+</body>
+</html>

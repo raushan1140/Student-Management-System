@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- including axios file in frontend -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Login page</title>
+
+    <style>
+
+        body {
+    background-color: #1f1f1f;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+#form-body {
+    background-color: #333;
+    color: #fff;
+    padding: 25px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    width: 400px;
+    text-align: center;
+    margin-top: 30px;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+label {
+    font-size: 16px;
+    margin-top: 15px;
+    display: block;
+}
+
+input {
+    padding: 10px;
+    font-size: 14px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid #555;
+    width: 100%;
+    margin-top: 6px;
+    background-color: #333;
+    color: #fff;
+}
+
+button {
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+input:focus {
+    outline: 2px solid #4CAF50;
+}
+
+.btn-container {
+    margin-top: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+a:hover {
+    color: #45a049;
+}
+
+
+    </style>
+</head>
+
+<body>
+
+    <form>
+        <div class="form" style="margin-left: 30px;">
+        <h1> Student Management System </h1>
+        <h3 style="margin-left: 30%;"> Login</h3>
+        </div>
+    <div id="form-body">
+        <label for="email" >Enter Admin's Email :</label>
+        <br>
+        <input type="text" name="email" id="email" placeholder="abc@gmail.com">
+        
+        <br>
+        <br>
+        
+        <label for="code" > Enter Admin Code : </label>
+        <br>
+        <input type="text" id="code" name="code" placeholder="Admin's Code...">
+
+        <br>
+
+        <div class="btn-container">
+            <button type="submit" class="submit-btn"> LOGIN </button>
+
+            <p>Not a existing User ?  <a href="/signup"> let's signup first </a>  </p>
+
+        </div>
+
+    </div>
+    </form>
+
+
+
+    <script>
+        let code = document.querySelector("#code");
+        let emailInput = document.querySelector("#email") ;
+
+        let btn = document.querySelector(".submit-btn");
+
+
+        btn.addEventListener('click', async (event)=>{
+            event.preventDefault();
+
+            // login request through axios
+            try {
+
+                let companyCode = code.value ;
+                let email = emailInput.value ;
+
+                
+                if (companyCode == '' || email == '') {
+                    alert("Please Enter Details Code !!");
+                    return;
+                };
+
+                try {
+                    let response = await axios.post(`http://localhost:3000/login/`,{
+                
+                        companyCode:companyCode,
+                        email:email,
+                    });
+
+                    console.log(response.data);
+                    let data = response.data ;
+
+                    alert(data.message) ;
+                    if(data.success==true)
+                        window.location.href="http://localhost:3000/index";
+                }
+                catch (err) {
+                    console.log(err.response.data) ;
+                    alert(err.response.data.message);
+                    return;
+                }
+            }
+            catch (err) {
+                console.log("Error in finding this company");
+            }
+
+        })
+    </script>
+
+</body>
+
+</html>
